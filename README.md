@@ -1,0 +1,1 @@
+# Kalkulator-TECWOOL-F-v1.5
