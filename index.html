@@ -4632,6 +4632,81 @@ else if (
 
 }
 
+// ✅ PROFIL ZAMKNIĘTY NIESTANDARDOWY
+else if (
+  document.getElementById("profileType").value === "customClosed"
+) {
+
+  let type =
+    document.getElementById("closedType").value;
+
+  let B =
+    parseFloat(
+      document.getElementById("closedB").value
+    );
+
+  let t =
+    parseFloat(
+      document.getElementById("closedT").value
+    );
+
+  let H = B;
+
+  if (type !== "CHS") {
+
+    H =
+      parseFloat(
+        document.getElementById("closedH").value
+      );
+  }
+
+  if (!B || !t || (type !== "CHS" && !H)) {
+
+    alert("Wpisz wymiary profilu");
+
+    return;
+  }
+
+  let A;
+
+  if (type === "CHS") {
+
+    let D = B;
+
+    A =
+      (
+        Math.PI / 4 *
+        (
+          D * D -
+          (D - 2 * t) *
+          (D - 2 * t)
+        )
+      ) / 1000000;
+
+    U =
+      Math.PI * D / 1000;
+  }
+  else {
+
+    A =
+      (
+        B * H -
+        (B - 2 * t) *
+        (H - 2 * t)
+      ) / 1000000;
+
+    U =
+      (
+        2 * B +
+        2 * H
+      ) / 1000;
+  }
+
+  UA = Math.round(U / A);
+
+}
+
+
 // ✅ BLACHA
 else if (
   document.getElementById("profileType").value === "BL"
@@ -4771,6 +4846,37 @@ else if (
 
   profileName =
     `KN ${A1}x${B1}x${t}`;
+
+}
+else if (
+  document.getElementById("profileType").value
+  === "customClosed"
+) {
+
+  let type =
+    document.getElementById("closedType").value;
+
+  let B =
+    document.getElementById("closedB").value;
+
+  let t =
+    document.getElementById("closedT").value;
+
+  if (type === "CHS") {
+
+    profileName =
+      `CHS ${B}x${t}`;
+
+  }
+  else {
+
+    let H =
+      document.getElementById("closedH").value;
+
+    profileName =
+      `${type} ${B}x${H}x${t}`;
+
+  }
 
 }
 else {
