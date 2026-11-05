@@ -4658,6 +4658,7 @@ else if (
       parseFloat(
         document.getElementById("closedH").value
       );
+
   }
 
   if (!B || !t || (type !== "CHS" && !H)) {
@@ -4683,8 +4684,18 @@ else if (
         )
       ) / 1000000;
 
-    U =
-      Math.PI * D / 1000;
+    if (exposure === "UA4")
+      U = Math.PI * D / 1000;
+
+    if (exposure === "UA3")
+      U = (Math.PI * D * 0.75) / 1000;
+
+    if (exposure === "UA2")
+      U = (Math.PI * D * 0.5) / 1000;
+
+    if (exposure === "UA1")
+      U = (Math.PI * D * 0.25) / 1000;
+
   }
   else {
 
@@ -4695,11 +4706,30 @@ else if (
         (H - 2 * t)
       ) / 1000000;
 
-    U =
-      (
-        2 * B +
-        2 * H
-      ) / 1000;
+    if (exposure === "UA4")
+      U =
+        (
+          2 * B +
+          2 * H
+        ) / 1000;
+
+    if (exposure === "UA3")
+      U =
+        (
+          B +
+          2 * H
+        ) / 1000;
+
+    if (exposure === "UA2")
+      U =
+        (
+          B + H
+        ) / 1000;
+
+    if (exposure === "UA1")
+      U =
+        Math.min(B, H) / 1000;
+
   }
 
   UA = Math.round(U / A);
