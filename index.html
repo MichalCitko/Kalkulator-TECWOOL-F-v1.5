@@ -17,8 +17,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 
-<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&display=swap" rel="stylesheet
- href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&display=swap" rel="stylesheet">
 
 
 
@@ -211,6 +210,8 @@ td, th {
   <option value="">-- Wybierz --</option>
   <option value="steel">Stal</option>
   <option value="concrete">Żelbet</option>
+  <option value="prefab">Stropy prefabrykowane</option>
+  <option value="channel">Stropy kanałowe</option>
 </select>
 
 <div id="steelSection" style="display:none;">
@@ -434,8 +435,240 @@ Eksport Excel
 
 
 
+<!-- POCZĄTEK KALKULATORA STROPÓW PREFABRYKOWANYCH -->
+<div id="prefabSection" style="display:none;">
 
+  <div id="prefabTypeSelector">
+  <label>Typ stropu:</label>
+  <select id="prefabType" onchange="togglePrefabFields()">
+    <option value="">-- Wybierz typ stropu --</option>
+    <option value="wps">Belkowo-płytowy (WPS)</option>
+    <option value="ackerman">Gęstożebrowy (Ackerman)</option>
+    <option value="klein">Belkowo-pustakowy (Klein / DZ / DMS)</option>
+  </select>
+  </div>
 
+  <div id="wpsFields" style="display:none;">
+    <label>Klasa odporności:</label>
+    <select id="wpsR">
+      <option value="REI60">REI60</option>
+      <option value="REI120">REI120</option>
+    </select>
+
+    <label>Powierzchnia stropu [m²]:</label>
+    <input id="wpsArea" type="number" min="0" step="0.01">
+
+    <label>Rozstaw belek [m]:</label>
+    <input id="wpsBeamSpacing" type="number" min="0" max="1.5" step="0.01">
+
+    <label>Izolacja termiczna:</label>
+    <select id="wpsInsulation">
+      <option value="EPS">EPS</option>
+      <option value="XPS">XPS</option>
+      <option value="PIR">PIR</option>
+      <option value="mineral">Wełna mineralna</option>
+      <option value="keramzyt">Keramzyt</option>
+    </select>
+
+    <label>Czy strop jest otynkowany:</label>
+    <select id="wpsPlastered">
+      <option value="no">Nie</option>
+      <option value="yes">Tak</option>
+    </select>
+
+    <label>Opis elementu:</label>
+    <input id="wpsDescription" type="text" placeholder="np. strop nad parterem">
+
+    <label>Straty [%]:</label>
+    <input id="wpsLoss" type="number" min="0" value="0" step="0.1">
+
+    <label>Cena [PLN/kg]:</label>
+    <input id="wpsPrice" type="number" min="0" value="6.5" step="0.01">
+  </div>
+
+  <div id="ackermanFields" style="display:none;">
+    <label>Klasa odporności:</label>
+    <select id="ackermanR">
+      <option value="REI60">REI60</option>
+      <option value="REI120">REI120</option>
+    </select>
+
+    <label>Rozstaw osiowy żeber [m]:</label>
+    <input id="ackermanSpacing" type="number" min="0" max="1.5" step="0.01">
+
+    <label>Wysokość stropu [mm]:</label>
+    <input id="ackermanHeight" type="number" min="0" step="1">
+
+    <label>Tynkowany:</label>
+    <select id="ackermanPlastered">
+      <option value="no">Nie</option>
+      <option value="yes">Tak</option>
+    </select>
+
+    <label>Powierzchnia [m²]:</label>
+    <input id="ackermanArea" type="number" min="0" step="0.01">
+
+    <label>Opis elementu:</label>
+    <input id="ackermanDescription" type="text" placeholder="np. strop prefabrykowany">
+
+    <label>Straty [%]:</label>
+    <input id="ackermanLoss" type="number" min="0" value="0" step="0.1">
+
+    <label>Cena [PLN/kg]:</label>
+    <input id="ackermanPrice" type="number" min="0" value="6.5" step="0.01">
+  </div>
+
+  <div id="kleinFields" style="display:none;">
+    <label>Klasa odporności:</label>
+    <select id="kleinR">
+      <option value="REI60">REI60</option>
+      <option value="REI120">REI120</option>
+    </select>
+
+    <label>Rozstaw osiowy belek [m]:</label>
+    <input id="kleinSpacing" type="number" min="0" max="1.5" step="0.01">
+
+    <label>Wysokość stropu [mm]:</label>
+    <input id="kleinHeight" type="number" min="0" step="1">
+
+    <label>Tynkowany:</label>
+    <select id="kleinPlastered">
+      <option value="no">Nie</option>
+      <option value="yes">Tak</option>
+    </select>
+
+    <label>Powierzchnia [m²]:</label>
+    <input id="kleinArea" type="number" min="0" step="0.01">
+
+    <label>Opis elementu:</label>
+    <input id="kleinDescription" type="text" placeholder="np. strop prefabrykowany">
+
+    <label>Straty [%]:</label>
+    <input id="kleinLoss" type="number" min="0" value="0" step="0.1">
+
+    <label>Cena [PLN/kg]:</label>
+    <input id="kleinPrice" type="number" min="0" value="6.5" step="0.01">
+  </div>
+
+  <div id="channelFields" style="display:none;">
+    <label>Klasa odporności:</label>
+    <select id="channelR">
+      <option value="REI60">REI60</option>
+      <option value="REI120">REI120</option>
+      <option value="REI180">REI180</option>
+      <option value="REI240">REI240</option>
+    </select>
+
+    <label>Wysokość płyty [mm]:</label>
+    <input id="channelHeight" type="number" min="150" max="500" step="1">
+
+    <label>Otulenie zbrojenia [mm]:</label>
+    <input id="channelCover" type="number" min="20" step="1">
+
+    <label>Czy strop jest otynkowany:</label>
+    <select id="channelPlastered">
+      <option value="no">Nie</option>
+      <option value="yes">Tak</option>
+    </select>
+
+    <label>Powierzchnia [m²]:</label>
+    <input id="channelArea" type="number" min="0" step="0.01">
+
+    <label>Opis elementu:</label>
+    <input id="channelDescription" type="text" placeholder="np. strop kanałowy">
+
+    <label>Straty [%]:</label>
+    <input id="channelLoss" type="number" min="0" value="0" step="0.1">
+
+    <label>Cena [PLN/kg]:</label>
+    <input id="channelPrice" type="number" min="0" value="6.5" step="0.01">
+  </div>
+
+  <button onclick="calculate()">Oblicz</button>
+  <div id="prefabResult" class="result"></div>
+
+  <div
+    style="
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      flex-wrap:wrap;
+      margin-top:20px;
+      align-items:flex-start;
+    "
+  >
+    <div id="prefabDocumentLinks" style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQC04hZlNFy4Ta4zxBIGL4dDARaRCC2UlU7FkuAZz4TU2ps?e=7n8hip" target="_blank">
+        <button>KOT</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQBwEe_Gc2jiSqMPhCcW8yCKAWKFxZQ2yherqcDiZHvxv0k?e=0s5WAW" target="_blank">
+        <button>KCSWU</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQBUhB49tAFyRa1bmgYSfSfOAR0lHCnd17buntuXb1Jp5p8?e=bEbNC3" target="_blank">
+        <button>KDWU</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQAy-sWRgW1wQ4bkhi6aJQj4Aed_RtkvNhcHc5ZJHKk1_4k?e=GUTWxk" target="_blank">
+        <button>DTR</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQC5sBgBnD5kSZPyf92lt-hVAWPpFf3GnMnckQrC6l5k3cI?e=ZHWSSb" target="_blank">
+        <button>SDS</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQBR7P86Qhj0SYsZPuzhGsvIAZRmlDnZiDqhrjLosMo0YTE?e=u7doMd" target="_blank">
+        <button>TDS</button>
+      </a>
+    </div>
+
+    <div id="channelDocumentLinks" style="display:none; gap:10px; flex-wrap:wrap;">
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQC_vfv-zoQ1QqErXpK3210XARaZ6uGIU0tdg9jrE3PQG3w?e=D1IIqp" target="_blank">
+        <button>KOT</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQAi2xsjBLpoS4Oe76H_W7WaAcl0qRRFPCYJYpwOZ4RNc4s?e=YXccKc" target="_blank">
+        <button>KCSWU</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQAjsywAU3e9QZxD5_AXRG10AQsPww_inEO0CFIZ3LU8GPc?e=kSyQGS" target="_blank">
+        <button>KDWU</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQAy-sWRgW1wQ4bkhi6aJQj4Aed_RtkvNhcHc5ZJHKk1_4k?e=GUTWxk" target="_blank">
+        <button>DTR</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQC5sBgBnD5kSZPyf92lt-hVAWPpFf3GnMnckQrC6l5k3cI?e=ZHWSSb" target="_blank">
+        <button>SDS</button>
+      </a>
+      <a href="https://mcrsa365.sharepoint.com/:b:/s/hzsalesforce/IQBR7P86Qhj0SYsZPuzhGsvIAZRmlDnZiDqhrjLosMo0YTE?e=u7doMd" target="_blank">
+        <button>TDS</button>
+      </a>
+    </div>
+
+    <div style="display:flex; gap:15px; align-items:flex-start; margin-left:auto;">
+      <div id="prefabSummary"
+        style="
+          background:white;
+          border:1px solid #e0e0e0;
+          padding:15px;
+          border-radius:8px;
+          min-width:220px;
+        "
+      >
+        <b>PODSUMOWANIE</b><br><br>
+        <b>PROJEKT:</b> <span id="prefabSumProject">-</span><br><br>
+        Powierzchnia: <span id="prefabSumArea">0</span> m²<br>
+        Zużycie: <span id="prefabSumWeight">0</span> kg<br>
+        <span id="prefabResinSummary">TECWOOL Resin Bonding: <span id="prefabSumResin">0</span> L<br></span>
+        Siatka: <span id="prefabSumMesh">0</span> m²<br>
+        <span id="prefabAnchorsSummary">Łączniki montażowe: <span id="prefabSumAnchors">0</span> szt.<br></span>
+        <b>Koszt orientacyjny: <span id="prefabSumPrice">0</span> PLN</b>
+      </div>
+
+      <button
+        onclick="exportExcel()"
+        style="min-width:120px;height:80px;"
+      >
+        Eksport Excel
+      </button>
+    </div>
+  </div>
+
+</div>
 
 
 
@@ -690,6 +923,11 @@ function toggleConstructionType() {
 
   document.getElementById("steelSection").style.display = "none";
   document.getElementById("concreteSection").style.display = "none";
+  document.getElementById("prefabSection").style.display = "none";
+  document.getElementById("prefabDocumentLinks").style.display =
+    type === "prefab" ? "flex" : "none";
+  document.getElementById("channelDocumentLinks").style.display =
+    type === "channel" ? "flex" : "none";
 
   if (type === "steel") {
     document.getElementById("steelSection").style.display = "block";
@@ -698,6 +936,40 @@ function toggleConstructionType() {
   if (type === "concrete") {
     document.getElementById("concreteSection").style.display = "block";
   }
+
+  if (type === "prefab") {
+    document.getElementById("prefabSection").style.display = "block";
+    document.getElementById("prefabTypeSelector").style.display = "block";
+    document.getElementById("prefabType").value = "";
+    togglePrefabFields();
+  }
+
+  if (type === "channel") {
+    document.getElementById("prefabSection").style.display = "block";
+    document.getElementById("prefabType").value = "";
+    document.getElementById("prefabTypeSelector").style.display = "none";
+    togglePrefabFields();
+  }
+}
+
+function togglePrefabFields() {
+
+  let type =
+    document.getElementById("prefabType").value;
+  const isChannelConstruction =
+    document.getElementById("constructionType").value === "channel";
+
+  document.getElementById("wpsFields").style.display =
+    type === "wps" ? "block" : "none";
+
+  document.getElementById("ackermanFields").style.display =
+    type === "ackerman" ? "block" : "none";
+
+  document.getElementById("kleinFields").style.display =
+    type === "klein" ? "block" : "none";
+
+  document.getElementById("channelFields").style.display =
+    isChannelConstruction || type === "channel" ? "block" : "none";
 }
 
 function toggleConcreteFields() {
@@ -2637,6 +2909,7 @@ R240: {
 
 
 let resultsTable = [];
+let prefabResults = [];
 
 // =====================
 // 🔵 SYSTEM
@@ -3816,11 +4089,13 @@ R,
 thickness
 );
 let requiredHs = req.hs;
+let missingConcrete = 0;
 
 if (hs + equivalent < requiredHs) {
 
   let requiredEquivalent =
     requiredHs - hs;
+  missingConcrete = requiredHs - hs - equivalent;
 
   finalThickness =
     getTecwoolThickness(
@@ -4297,6 +4572,9 @@ let eta =
 let uwagi =
   `ω=${omega}, η=${eta}`;
 
+let req =
+  columnRequirements[R]?.[omega]?.[eta] || null;
+
 let temp =
   parseInt(
     document.getElementById("concreteTemp").value
@@ -4326,9 +4604,6 @@ uwagi =
  
 }
 else {
- 
-let req =
-columnRequirements[R]?.[omega]?.[eta];
  
 if (!req) {
  
@@ -4535,11 +4810,687 @@ document.getElementById("concreteResult").innerHTML = "";
 // =====================
 // ✅ CALCULATE
 // =====================
+function calculatePrefab() {
+
+  const selectedType =
+    document.getElementById("prefabType").value;
+
+  const type =
+    document.getElementById("constructionType").value === "channel"
+      ? "channel"
+      : selectedType;
+
+  if (type === "ackerman") {
+    calculateAckermanPrefab();
+    return;
+  }
+
+  if (type === "channel") {
+    calculateChannelPrefab();
+    return;
+  }
+
+  if (type === "klein") {
+    calculateKleinPrefab();
+    return;
+  }
+
+  if (type !== "wps") {
+    document.getElementById("prefabResult").innerHTML =
+      "Obliczenia dla tego typu stropu zostaną dodane po ustaleniu jego tabeli danych.";
+    return;
+  }
+
+  const R =
+    document.getElementById("wpsR").value;
+
+  const insulation =
+    document.getElementById("wpsInsulation").value;
+
+  const area =
+    parseFloat(
+      document.getElementById("wpsArea").value
+    );
+
+  const beamSpacing =
+    parseFloat(
+      document.getElementById("wpsBeamSpacing").value
+    );
+
+  if (!area || area <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną powierzchnię stropu.";
+    return;
+  }
+
+  if (!beamSpacing || beamSpacing <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawny rozstaw belek.";
+    return;
+  }
+
+  if (beamSpacing > 1.5) {
+    const plastered =
+      document.getElementById("wpsPlastered").value === "yes";
+
+    prefabResults.push({
+      description:
+        document.getElementById("wpsDescription").value,
+      type: "WPS",
+      R,
+      insulation,
+      area,
+      beamSpacing,
+      thicknessText: "",
+      invalid: true,
+      loss:
+        parseFloat(document.getElementById("wpsLoss").value) || 0,
+      consumption: null,
+      price:
+        parseFloat(document.getElementById("wpsPrice").value) || 0,
+      plastered,
+      resinLitres: plastered ? 0 : area / 15,
+      meshArea: plastered ? area : 0,
+      anchors: plastered ? Math.ceil(area / 0.25) : 0,
+      note: "Przekroczono zakres rozstawu belek."
+    });
+
+    updatePrefabTable();
+    return;
+  }
+
+  let thicknessText = "";
+  let thicknessForCalculation = null;
+  let note = "";
+
+  if (R === "REI60") {
+    thicknessText = "12,1 mm na całej powierzchni";
+    thicknessForCalculation = 12.1;
+    note = "WPS – 12,1 mm na całej powierzchni.";
+  }
+  else if (
+    R === "REI120" &&
+    (
+      insulation === "mineral" ||
+      insulation === "keramzyt"
+    )
+  ) {
+    thicknessText =
+      "22 mm na pasie dolnej belki + zakład 200 mm z obu stron; 12,1 mm na pozostałej powierzchni";
+    thicknessForCalculation = null;
+    note =
+      "WPS REI120 – izolacja A1: 22 mm na pasie dolnej belki " +
+      "z zakładem po 200 mm z obu stron, 12,1 mm na pozostałej powierzchni.";
+  }
+  else if (
+    R === "REI120" &&
+    (
+      insulation === "EPS" ||
+      insulation === "XPS" ||
+      insulation === "PIR"
+    )
+  ) {
+    thicknessText = "35,2 mm na całej powierzchni";
+    thicknessForCalculation = 35.2;
+    note = "WPS REI120 – 35,2 mm na całej powierzchni.";
+  }
+  else {
+    document.getElementById("prefabResult").innerHTML =
+      "Brak danych dla wybranej kombinacji.";
+    return;
+  }
+
+  const consumption =
+    thicknessForCalculation === null
+      ? null
+      : area *
+        (thicknessForCalculation / 1000) *
+        320;
+  const loss =
+    parseFloat(document.getElementById("wpsLoss").value) || 0;
+
+  const price =
+    parseFloat(document.getElementById("wpsPrice").value) || 0;
+
+  const consumptionWithLoss =
+    consumption === null
+      ? null
+      : consumption * (1 + loss / 100);
+
+  const plastered =
+    document.getElementById("wpsPlastered").value === "yes";
+
+  const resinLitres =
+    plastered ? 0 : area / 15;
+
+  const meshArea =
+    plastered ? area : 0;
+
+  const anchors =
+    plastered ? Math.ceil(area / 0.25) : 0;
+
+  prefabResults.push({
+    description:
+      document.getElementById("wpsDescription").value,
+    type: "WPS",
+    R,
+    insulation,
+    area,
+    beamSpacing,
+    thicknessText,
+    loss,
+    consumption: consumptionWithLoss,
+    price,
+    plastered,
+    resinLitres,
+    meshArea,
+    anchors,
+    note
+  });
+
+  updatePrefabTable();
+}
+
+function calculateChannelPrefab() {
+  const R =
+    document.getElementById("channelR").value;
+
+  const height =
+    parseFloat(
+      document.getElementById("channelHeight").value
+    );
+
+  const cover =
+    parseFloat(
+      document.getElementById("channelCover").value
+    );
+
+  const area =
+    parseFloat(
+      document.getElementById("channelArea").value
+    );
+
+  if (!area || area <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną powierzchnię stropu.";
+    return;
+  }
+
+  if (!height || height <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną wysokość płyty.";
+    return;
+  }
+
+  if (!cover || cover <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawne otulenie zbrojenia.";
+    return;
+  }
+
+  const plastered =
+    document.getElementById("channelPlastered").value === "yes";
+
+  const loss =
+    parseFloat(document.getElementById("channelLoss").value) || 0;
+
+  const price =
+    parseFloat(document.getElementById("channelPrice").value) || 0;
+
+  const resinLitres =
+    0;
+
+  const meshArea =
+    plastered ? area : 0;
+
+  const anchors =
+    0;
+
+  let invalidNote = "";
+
+  if (height < 150 || height > 500) {
+    invalidNote =
+      "Wysokość płyty musi być w zakresie 150–500 mm.";
+  } else if (cover < 20) {
+    invalidNote =
+      "Zbyt małe otulenie zbrojenia – wymagane minimum to 20 mm.";
+  }
+
+  if (invalidNote) {
+    prefabResults.push({
+      description:
+        document.getElementById("channelDescription").value,
+      type: "Strop kanałowy",
+      R,
+      insulation: "-",
+      area,
+      beamSpacing: null,
+      slabHeight: height,
+      cover,
+      thicknessText: "",
+      invalid: true,
+      loss,
+      consumption: null,
+      price,
+      plastered,
+      resinLitres,
+      meshArea,
+      anchors,
+      note: invalidNote
+    });
+
+    updatePrefabTable();
+    return;
+  }
+
+  const thicknessMap = {
+    REI60: 18,
+    REI120: 22,
+    REI180: 27,
+    REI240: 29
+  };
+
+  const thickness = thicknessMap[R];
+  const thicknessText =
+    `${thickness} mm na całej powierzchni`;
+
+  const consumption =
+    area * (thickness / 1000) * 320 *
+    (1 + loss / 100);
+
+  prefabResults.push({
+    description:
+      document.getElementById("channelDescription").value,
+    type: "Strop kanałowy",
+    R,
+    insulation: "-",
+    area,
+    beamSpacing: null,
+    slabHeight: height,
+    cover,
+    thicknessText,
+    loss,
+    consumption,
+    price,
+    plastered,
+    resinLitres,
+    meshArea,
+    anchors,
+    note: `Strop kanałowy – ${thicknessText}.`
+  });
+
+  updatePrefabTable();
+}
+
+function calculateAckermanPrefab() {
+  const R =
+    document.getElementById("ackermanR").value;
+
+  const spacing =
+    parseFloat(
+      document.getElementById("ackermanSpacing").value
+    );
+
+  const height =
+    parseFloat(
+      document.getElementById("ackermanHeight").value
+    );
+
+  const area =
+    parseFloat(
+      document.getElementById("ackermanArea").value
+    );
+
+  if (!area || area <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną powierzchnię stropu.";
+    return;
+  }
+
+  if (!spacing || spacing <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawny rozstaw osiowy żeber.";
+    return;
+  }
+
+  if (!height || height <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną wysokość stropu.";
+    return;
+  }
+
+  const plastered =
+    document.getElementById("ackermanPlastered").value === "yes";
+
+  const loss =
+    parseFloat(document.getElementById("ackermanLoss").value) || 0;
+
+  const price =
+    parseFloat(document.getElementById("ackermanPrice").value) || 0;
+
+  const resinLitres =
+    plastered ? 0 : area / 15;
+
+  const meshArea =
+    plastered ? area : 0;
+
+  const anchors =
+    plastered ? Math.ceil(area / 0.25) : 0;
+
+  let invalidNote = "";
+
+  if (spacing > 1.5) {
+    invalidNote = "Przekroczono zakres rozstawu żeber.";
+  } else if (height < 100) {
+    invalidNote = "Zbyt mała wysokość stropu.";
+  }
+
+  if (invalidNote) {
+    prefabResults.push({
+      description:
+        document.getElementById("ackermanDescription").value,
+      type: "Gęstożebrowy (Ackerman)",
+      R,
+      insulation: "-",
+      area,
+      beamSpacing: spacing,
+      slabHeight: height,
+      thicknessText: "",
+      invalid: true,
+      loss,
+      consumption: null,
+      price,
+      plastered,
+      resinLitres,
+      meshArea,
+      anchors,
+      note: invalidNote
+    });
+
+    updatePrefabTable();
+    return;
+  }
+
+  const thickness = R === "REI60" ? 15 : 25;
+  const thicknessText =
+    `${thickness} mm na całej powierzchni`;
+
+  const consumption =
+    area * (thickness / 1000) * 320 *
+    (1 + loss / 100);
+
+  prefabResults.push({
+    description:
+      document.getElementById("ackermanDescription").value,
+    type: "Gęstożebrowy (Ackerman)",
+    R,
+    insulation: "-",
+    area,
+    beamSpacing: spacing,
+    slabHeight: height,
+    thicknessText,
+    loss,
+    consumption,
+    price,
+    plastered,
+    resinLitres,
+    meshArea,
+    anchors,
+    note: `Ackerman – ${thicknessText}.`
+  });
+
+  updatePrefabTable();
+}
+
+function calculateKleinPrefab() {
+  const R =
+    document.getElementById("kleinR").value;
+
+  const spacing =
+    parseFloat(
+      document.getElementById("kleinSpacing").value
+    );
+
+  const height =
+    parseFloat(
+      document.getElementById("kleinHeight").value
+    );
+
+  const area =
+    parseFloat(
+      document.getElementById("kleinArea").value
+    );
+
+  if (!area || area <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną powierzchnię stropu.";
+    return;
+  }
+
+  if (!spacing || spacing <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawny rozstaw osiowy belek.";
+    return;
+  }
+
+  if (!height || height <= 0) {
+    document.getElementById("prefabResult").innerHTML =
+      "Wprowadź poprawną wysokość stropu.";
+    return;
+  }
+
+  const plastered =
+    document.getElementById("kleinPlastered").value === "yes";
+
+  const loss =
+    parseFloat(document.getElementById("kleinLoss").value) || 0;
+
+  const price =
+    parseFloat(document.getElementById("kleinPrice").value) || 0;
+
+  const resinLitres =
+    plastered ? 0 : area / 15;
+
+  const meshArea =
+    plastered ? area : 0;
+
+  const anchors =
+    plastered ? Math.ceil(area / 0.25) : 0;
+
+  let invalidNote = "";
+
+  if (spacing > 1.5) {
+    invalidNote = "Przekroczono zakres rozstawu belek.";
+  } else if (height < 100) {
+    invalidNote = "Zbyt mała wysokość stropu.";
+  }
+
+  if (invalidNote) {
+    prefabResults.push({
+      description:
+        document.getElementById("kleinDescription").value,
+      type: "Klein / DZ / DMS",
+      R,
+      insulation: "-",
+      area,
+      beamSpacing: spacing,
+      slabHeight: height,
+      thicknessText: "",
+      invalid: true,
+      loss,
+      consumption: null,
+      price,
+      plastered,
+      resinLitres,
+      meshArea,
+      anchors,
+      note: invalidNote
+    });
+
+    updatePrefabTable();
+    return;
+  }
+
+  let thicknessText =
+    R === "REI60"
+      ? "15 mm na całej powierzchni"
+      : R === "REI120"
+        ? "25 mm na całej powierzchni"
+        : "";
+
+  if (!thicknessText) {
+    document.getElementById("prefabResult").innerHTML =
+      "Brak danych dla wybranej klasy odporności.";
+    return;
+  }
+
+  const thickness =
+    R === "REI60" ? 15 : 25;
+
+  const consumption =
+    area * (thickness / 1000) * 320 *
+    (1 + loss / 100);
+
+  prefabResults.push({
+    description:
+      document.getElementById("kleinDescription").value,
+    type: "Klein / DZ / DMS",
+    R,
+    insulation: "-",
+    area,
+    beamSpacing: spacing,
+    slabHeight: height,
+    thicknessText,
+    loss,
+    consumption,
+    price,
+    plastered,
+    resinLitres,
+    meshArea,
+    anchors,
+    note: `Klein / DZ / DMS – ${thicknessText}.`
+  });
+
+  updatePrefabTable();
+}
+
+function updatePrefabTable() {
+  let totalArea = 0;
+  let totalWeight = 0;
+  let hasUnquantifiedWeight = false;
+  let totalPrice = 0;
+  let totalResinLitres = 0;
+  let totalMeshArea = 0;
+  let totalAnchors = 0;
+  const channelMode =
+    document.getElementById("constructionType").value === "channel";
+
+  let html = `
+  <table id="prefabResultsTable">
+    <tr>
+      <th></th>
+      <th>Opis</th>
+      <th>Typ stropu</th>
+      <th>Klasa R</th>
+      <th>Izolacja</th>
+      <th>Tynkowany</th>
+      <th>Rozstaw osiowy [m]</th>
+      <th>Wysokość stropu [mm]</th>
+      <th>Otulenie zbrojenia [mm]</th>
+      <th>Powierzchnia [m²]</th>
+      <th>Dobrana grubość mcr TECWOOL F</th>
+      <th>Straty %</th>
+      <th>Zużycie Σ [kg]</th>
+      ${channelMode ? "" : "<th>Grunt [L]</th>"}
+      <th>Siatka [m²]</th>
+      ${channelMode ? "" : "<th>Łączniki [szt.]</th>"}
+      <th>Uwagi</th>
+    </tr>
+  `;
+
+  prefabResults.forEach((row, i) => {
+    totalArea += row.area;
+    totalResinLitres += row.resinLitres;
+    totalMeshArea += row.meshArea;
+    totalAnchors += row.anchors;
+
+    if (row.consumption === null && !row.invalid) {
+      hasUnquantifiedWeight = true;
+    } else {
+      totalWeight += row.consumption;
+      totalPrice += row.consumption * row.price;
+    }
+
+    html += `
+      <tr>
+        <td>
+          <span class="delete-btn" onclick="removePrefabRow(${i})">✖</span>
+        </td>
+        <td>${row.description || "-"}</td>
+        <td>${row.type}</td>
+        <td>${row.R}</td>
+        <td>${row.insulation}</td>
+        <td>${row.plastered ? "Tak" : "Nie"}</td>
+        <td>${row.beamSpacing ? row.beamSpacing.toFixed(2).replace(".", ",") : "-"}</td>
+        <td>${row.slabHeight ? row.slabHeight : "-"}</td>
+        <td>${row.cover ? row.cover : "-"}</td>
+        <td style="mso-number-format:'0.00';">${row.area.toFixed(2)}</td>
+        <td>${row.thicknessText}</td>
+        <td style="
+          background:${row.loss ? '#ffeaea' : 'transparent'};
+          color:${row.loss ? '#d9363e' : '#333'};
+          font-weight:${row.loss ? 'bold' : 'normal'};
+        ">${row.loss ? "+" + row.loss + "%" : "0%"}</td>
+        <td>${row.consumption === null ? "-" : row.consumption.toFixed(1)}</td>
+        ${channelMode ? "" : `<td>${row.resinLitres ? row.resinLitres.toFixed(2) : "-"}</td>`}
+        <td>${row.meshArea ? row.meshArea.toFixed(2) : "-"}</td>
+        ${channelMode ? "" : `<td>${row.anchors ? row.anchors : "-"}</td>`}
+        <td>${row.note}</td>
+      </tr>
+    `;
+  });
+
+  html += `</table>`;
+
+  document.getElementById("prefabResult").innerHTML = html;
+  document.getElementById("prefabSumProject").innerText =
+    document.getElementById("projectName").value || "-";
+  document.getElementById("prefabSumArea").innerText =
+    totalArea.toFixed(2);
+  document.getElementById("prefabSumWeight").innerText =
+    totalWeight.toFixed(1) +
+    (hasUnquantifiedWeight ? " (częściowo nieokreślone)" : "");
+  document.getElementById("prefabSumResin").innerText =
+    totalResinLitres.toFixed(2);
+  document.getElementById("prefabSumMesh").innerText =
+    totalMeshArea.toFixed(2);
+  document.getElementById("prefabSumAnchors").innerText =
+    totalAnchors.toString();
+  document.getElementById("prefabResinSummary").style.display =
+    channelMode ? "none" : "inline";
+  document.getElementById("prefabAnchorsSummary").style.display =
+    channelMode ? "none" : "inline";
+  document.getElementById("prefabSumPrice").innerText =
+    totalPrice.toFixed(2);
+}
+
+function removePrefabRow(i) {
+  prefabResults.splice(i, 1);
+  updatePrefabTable();
+}
 
 function calculate() {
 
   let constructionType =
     document.getElementById("constructionType").value;
+
+  if (
+    constructionType === "prefab" ||
+    constructionType === "channel"
+  ) {
+    calculatePrefab();
+    return;
+  }
 
   if (constructionType === "concrete") {
     calculateConcrete();
@@ -4791,7 +5742,17 @@ else {
 
 }
 
-let table = detectTable(profile)==="open" ? openTable : closedTable;
+let selectedProfileType =
+  document.getElementById("profileType").value;
+
+let table =
+  selectedProfileType === "customClosed" ||
+  (selectedProfileType !== "custom" &&
+   selectedProfileType !== "KN" &&
+   selectedProfileType !== "BL" &&
+   detectTable(profile) === "closed")
+    ? closedTable
+    : openTable;
 
 // ✅ kontrola maksymalnego U/A
 let maxUA =
@@ -5089,6 +6050,13 @@ if (document.getElementById("constructionType").value === "steel") {
  
 table = document.querySelector("#result table");
  
+} else if (
+  document.getElementById("constructionType").value === "prefab" ||
+  document.getElementById("constructionType").value === "channel"
+) {
+ 
+table = document.querySelector("#prefabResult table");
+ 
 } else {
  
 table = document.getElementById("concreteResultsTable");
@@ -5118,6 +6086,23 @@ document.getElementById("sumWeight").innerText;
  
 priceText =
 document.getElementById("sumPrice").innerText;
+ 
+} else if (
+  document.getElementById("constructionType").value === "prefab" ||
+  document.getElementById("constructionType").value === "channel"
+) {
+ 
+projectText =
+document.getElementById("projectName").value || "-";
+ 
+areaText =
+document.getElementById("prefabSumArea").innerText;
+ 
+weightText =
+document.getElementById("prefabSumWeight").innerText;
+ 
+priceText =
+document.getElementById("prefabSumPrice").innerText;
  
 } else {
  
@@ -5252,4 +6237,3 @@ function openTDS() {
 
 </body>
 </html>
-
